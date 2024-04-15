@@ -115,56 +115,61 @@ def set_file_inline(_file_name,_mime,_access_hash_rec,dec_data,size):
 		
 	
 	
-	
-
-@telgram_bot.message_handler(content_types=['photo','text','video'])
-def handler_telgram(message):
+while True:
 	try:
-		if(message.content_type=='text'):
-			text = message.text
+		@telgram_bot.message_handler(content_types=['photo','text','video'])
+		def handler_telgram(message):
+			try:
+				if(message.content_type=='text'):
+					text = message.text
+					
+					if text == 's':
+						print(rubika_bot.sendMessage(text,guid))
+					
+					if text.startswith("PD"):
+						telgram_bot.reply_to(message,'start to downloading')
+						video_link = text.replace('PD ','')
+						
+						
+						
+						video =	porn_hub_down(video_link)
+						upload_data = json.loads(rubika_bot.requestSendFile('video.mp4',len(video),'mp4'))['data']
+					access_hash_rec = rubika_bot.upload_file(video,upload_data,telegram_bot_token=token,chat_id=message.chat.id)['access_hash_rec']
+					
+					print(rubika_bot.send_Photo(set_file_inline('video.mp4','mp4',access_hash_rec,upload_data,len(video)),guid))
+					delete_file('video.mp4')
+					
+					
+				elif(message.content_type=='photo'):
+					photo = save_photo(message)
+					upload_data = json.loads(rubika_bot.requestSendFile('photo.jpg',len(photo),'jpg'))['data']
+					access_hash_rec = rubika_bot.upload_file(photo,upload_data)['access_hash_rec']
+					print(rubika_bot.send_Photo(set_file_inline('photo.jpg','jpg',access_hash_rec,upload_data,len(photo)),guid))
+					delete_file('photo.jpg')
+					
+					
+				elif(message.content_type == 'video'):
+					video = save_video(message)
+					upload_data = json.loads(rubika_bot.requestSendFile('video.mp4',len(video),'mp4'))['data']
+					access_hash_rec = rubika_bot.upload_file(video,upload_data,telegram_bot_token=token,chat_id=message.chat.id)['access_hash_rec']
+					print(rubika_bot.send_Photo(set_file_inline('video.mp4','mp4',access_hash_rec,upload_data,len(video)),guid))
+					delete_file('video.mp4')
+					
+					
+					
+			except Exception as e:
+						telgram_bot.reply_to(message,str(e))
+						
 			
-			if text == 's':
-				print(rubika_bot.sendMessage(text,guid))
-			
-			if text.startswith("PD"):
-				telgram_bot.reply_to(message,'start to downloading')
-				video_link = text.replace('PD ','')
-				
-				
-				
-				video =	porn_hub_down(video_link)
-				upload_data = json.loads(rubika_bot.requestSendFile('video.mp4',len(video),'mp4'))['data']
-			access_hash_rec = rubika_bot.upload_file(video,upload_data,telegram_bot_token=token,chat_id=message.chat.id)['access_hash_rec']
-			
-			print(rubika_bot.send_Photo(set_file_inline('video.mp4','mp4',access_hash_rec,upload_data,len(video)),guid))
-			delete_file('video.mp4')
-			
-			
-		elif(message.content_type=='photo'):
-			photo = save_photo(message)
-			upload_data = json.loads(rubika_bot.requestSendFile('photo.jpg',len(photo),'jpg'))['data']
-			access_hash_rec = rubika_bot.upload_file(photo,upload_data)['access_hash_rec']
-			print(rubika_bot.send_Photo(set_file_inline('photo.jpg','jpg',access_hash_rec,upload_data,len(photo)),guid))
-			delete_file('photo.jpg')
-			
-			
-		elif(message.content_type == 'video'):
-			video = save_video(message)
-			upload_data = json.loads(rubika_bot.requestSendFile('video.mp4',len(video),'mp4'))['data']
-			access_hash_rec = rubika_bot.upload_file(video,upload_data,telegram_bot_token=token,chat_id=message.chat.id)['access_hash_rec']
-			print(rubika_bot.send_Photo(set_file_inline('video.mp4','mp4',access_hash_rec,upload_data,len(video)),guid))
-			delete_file('video.mp4')
-			
-			
-			
+		telgram_bot.polling()
 	except Exception as e:
-				telgram_bot.reply_to(message,str(e))
-				
-			
+		rubika_bot.sendMessage(str(e),guid)
+		print(e)
+		
+		
+		
 	
-telgram_bot.polling()
-
-
-
-
-
+	
+	
+	
+	

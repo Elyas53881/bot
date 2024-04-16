@@ -3,7 +3,7 @@ from os import system
 try:
 	import telebot
 except:
-	system('pip pip install pyTelegramBotAPI')
+	system('pip install pyTelegramBotAPI')
 	import telebot
 try:
 	import requests
